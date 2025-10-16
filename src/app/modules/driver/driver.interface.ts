@@ -5,9 +5,9 @@ export interface ILocation {
 }
 
 export enum EDriverStatus {
-  offline,
-  available,
-  on_trip,
+  offline = "offline",
+  available = "available",
+  on_trip = "on_trip",
 }
 export interface IDriver {
   user: Types.ObjectId;

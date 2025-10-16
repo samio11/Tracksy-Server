@@ -1,8 +1,8 @@
 import { Types } from "mongoose";
-enum EVehicleType {
-  Car,
-  bike,
-  truck,
+export enum EVehicleType {
+  Car = "Car",
+  Bike = "Bike",
+  Truck = "Truck",
 }
 export interface IVehicle {
   owner: Types.ObjectId;
