@@ -2,6 +2,7 @@ import { Server } from "http";
 import mongoose from "mongoose";
 import config from "./app/config";
 import app from "./app";
+import { redisConnection } from "./app/config/redis.config";
 let server: Server;
 
 async function startServer() {
@@ -17,6 +18,7 @@ async function startServer() {
 
 (async () => {
   await startServer();
+  await redisConnection();
 })();
 
 process.on("uncaughtException", (err) => {
