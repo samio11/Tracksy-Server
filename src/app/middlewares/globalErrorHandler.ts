@@ -6,8 +6,9 @@ import { handleValidatorError } from "../errors/handleValidationError";
 import { handleZodError } from "../errors/handleZodError";
 import { AppError } from "../errors/AppError";
 import config from "../config";
+import { removeImageFromCloudinary } from "../config/cloudinary.config";
 
-export const handleGlobalErrorHandler = (
+export const handleGlobalErrorHandler = async (
   err: any,
   req: Request,
   res: Response,
@@ -21,6 +22,13 @@ export const handleGlobalErrorHandler = (
       message: "Opps! Something wrong",
     },
   ];
+
+  if (config.NODE_ENV === "development") {
+    console.log(err);
+  }
+  if (req?.file) {
+    await removeImageFromCloudinary(req?.file?.path);
+  }
 
   if (err.code === 11000) {
     const x = handleDuplicateError(err);
