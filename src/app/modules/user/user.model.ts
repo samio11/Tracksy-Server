@@ -5,7 +5,7 @@ const userSchema = new Schema<IUser>(
   {
     name: { type: String, required: true, trim: true },
     email: { type: String, required: true, unique: true },
-    phone: { type: String, required: true },
+    phone: { type: String },
     password: { type: String },
     role: {
       type: String,
@@ -15,7 +15,7 @@ const userSchema = new Schema<IUser>(
       },
       default: ERole.rider,
     },
-    avatar: { type: String, required: true },
+    avatar: { type: String },
     driverProfile: { type: Schema.Types.ObjectId, ref: "Driver" },
     isVerified: { type: Boolean, default: false },
   },

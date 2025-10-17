@@ -5,6 +5,8 @@ import {
   VerifyCallback,
 } from "passport-google-oauth20";
 import config from ".";
+import { User } from "../modules/user/user.model";
+import { ERole } from "../modules/user/user.interface";
 
 passport.use(
   new GoogleStrategy(
@@ -18,6 +20,32 @@ passport.use(
       refreshToken: string,
       profile: Profile,
       done: VerifyCallback
-    ) {}
+    ) {
+      try {
+        const email = profile.emails?.[0].value;
+        if (!email) {
+          return done(null, false, { message: "User is not found" });
+        }
+        let existUser = await User.findOne({ email });
+        if (!existUser) {
+          existUser = await User.create({
+            email,
+            name: profile?.displayName,
+            role: ERole.rider,
+            avatar: profile?.photos?.[0].value,
+            isVerified: true,
+          });
+        }
+
+        if (existUser.isVerified === false) {
+          return done(null, false, { message: "User is not verified" });
+        }
+
+        return done(null, existUser);
+      } catch (err) {
+        console.log("Google Login Error");
+        return done(err);
+      }
+    }
   )
 );

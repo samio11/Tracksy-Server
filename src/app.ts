@@ -1,5 +1,6 @@
 import express, { Application, NextFunction, Request, Response } from "express";
 import cors from "cors";
+import "./app/config/passport";
 import { handleGlobalErrorHandler } from "./app/middlewares/globalErrorHandler";
 import { notFound } from "./app/middlewares/notFound";
 const app: Application = express();
