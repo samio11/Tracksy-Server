@@ -22,4 +22,8 @@ router.post(
   authController.registerDriver
 );
 
+router.get("/verify/:email", authController.verifyUser);
+router.post("/send-otp", authController.sendForgetPassOTP);
+router.post("/reset-password", authController.resetPassword);
+
 export const authRoutes = router;

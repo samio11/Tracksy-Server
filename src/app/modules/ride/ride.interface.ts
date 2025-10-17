@@ -19,7 +19,7 @@ export interface IRideHistory {
 
 export interface IRide {
   rider: Types.ObjectId;
-  driver: Types.ObjectId;
+  driver?: Types.ObjectId;
   startRide: ILocation;
   endRide: ILocation;
   distance?: number;

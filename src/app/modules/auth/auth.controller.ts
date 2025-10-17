@@ -32,6 +32,17 @@ const registerAdmin = catchAsync(async (req, res, next) => {
     data: result,
   });
 });
+const verifyUser = catchAsync(async (req, res, next) => {
+  const payload = req.params.email;
+  //   console.log(payload);
+  const result = await authServices.verifyUser(payload);
+  sendResponse(res, {
+    success: true,
+    message: "User Verified Done",
+    statusCode: 200,
+    data: result,
+  });
+});
 const registerDriver = catchAsync(async (req, res, next) => {
   const payload = {
     ...JSON.parse(req?.body?.data),
@@ -63,9 +74,35 @@ const login = catchAsync(async (req, res, next) => {
   });
 });
 
+const sendForgetPassOTP = catchAsync(async (req, res, next) => {
+  const payload = req.body.email;
+  const result = await authServices.sendForgetPassOTP(payload);
+  sendResponse(res, {
+    success: true,
+    message: "Forget Password OTP Send",
+    statusCode: 200,
+    data: result,
+  });
+});
+const resetPassword = catchAsync(async (req, res, next) => {
+  const email = req.body.email;
+  const otp = req.body.otp;
+  const password = req.body.password;
+  const result = await authServices.resetPassword(email, otp, password);
+  sendResponse(res, {
+    success: true,
+    message: "Password Reset Done",
+    statusCode: 200,
+    data: result,
+  });
+});
+
 export const authController = {
   registerUser,
   registerDriver,
   registerAdmin,
   login,
+  verifyUser,
+  sendForgetPassOTP,
+  resetPassword,
 };

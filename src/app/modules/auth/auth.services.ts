@@ -1,4 +1,7 @@
+import config from "../../config";
+import { redisClient } from "../../config/redis.config";
 import { AppError } from "../../errors/AppError";
+import { sendEmail } from "../../utils/sendEmail";
 import { IDriver } from "../driver/driver.interface";
 import { Driver } from "../driver/driver.model";
 import { ERole, IUser } from "../user/user.interface";
@@ -9,6 +12,18 @@ import bcrypt from "bcrypt";
 
 const registerAsUser = async (payload: IUser) => {
   const result = await User.create(payload);
+  await sendEmail({
+    to: result.email,
+    subject: "Welcome to Tracksy 🚗 - Verify Your Account",
+    tempFileName: "welcome",
+    tempFileData: {
+      name: result.name,
+      email: result.email,
+      profilePic: result.avatar,
+      verifyLink: `http://localhost:5000/api/v1/auth/verify/${payload.email}`,
+      logo: "https://i.ibb.co/XZwMnkH1/tracksy.jpg",
+    },
+  });
   return result;
 };
 
@@ -62,6 +77,19 @@ const registerAsDriver = async (payload: TDriverType) => {
       { driverProfile: newDriver[0]?._id },
       { new: true, session }
     );
+
+    await sendEmail({
+      to: updateUserDriverProfile?.email as string,
+      subject: "Welcome to Tracksy 🚗 - Verify Your Account",
+      tempFileName: "welcome",
+      tempFileData: {
+        name: updateUserDriverProfile?.name,
+        email: updateUserDriverProfile?.email,
+        profilePic: updateUserDriverProfile?.avatar,
+        verifyLink: `http://localhost:5000/api/v1/auth/verify/${updateUserDriverProfile?.email}`,
+        logo: "https://i.ibb.co/XZwMnkH1/tracksy.jpg",
+      },
+    });
     await session.commitTransaction();
     session.endSession();
     return updateUserDriverProfile;
@@ -75,7 +103,22 @@ const registerAsDriver = async (payload: TDriverType) => {
 
 const registerAdmin = async (payload: IUser) => {
   const updatedPayload = { ...payload, role: ERole.admin };
+  //   https://i.ibb.co/XZwMnkH1/tracksy.jpg
   const result = await User.create(updatedPayload);
+
+  await sendEmail({
+    to: result.email,
+    subject: "Welcome to Tracksy 🚗 - Verify Your Account",
+    tempFileName: "welcome",
+    tempFileData: {
+      name: result.name,
+      email: result.email,
+      profilePic: result.avatar,
+      verifyLink: `http://localhost:5000/api/v1/auth/verify/${payload.email}`,
+      logo: "https://i.ibb.co/XZwMnkH1/tracksy.jpg",
+    },
+  });
+
   return result;
 };
 
@@ -97,9 +140,86 @@ const login = async (payload: { email: string; password: string }) => {
   return existUser;
 };
 
+const verifyUser = async (payload: string) => {
+  const existUser = await User.findOne({ email: payload });
+  if (!existUser) {
+    throw new AppError(401, "User is not exists");
+  }
+  const result = await User.findOneAndUpdate(
+    { email: existUser.email },
+    { isVerified: true },
+    { new: true }
+  );
+  return result;
+};
+
+const sendForgetPassOTP = async (email: string) => {
+  const existUser = await User.findOne({ email });
+  if (!existUser) {
+    throw new AppError(401, "User is not available");
+  }
+  if (existUser.isVerified === false) {
+    throw new AppError(401, "Please Verify First");
+  }
+
+  const otp = Math.floor(Math.random() * 999999) + 100000;
+  const otp_name = `otp_${existUser.email}`;
+  await redisClient.set(otp_name, otp, {
+    expiration: {
+      type: "EX",
+      value: 120,
+    },
+  });
+  await sendEmail({
+    to: existUser.email,
+    subject: "Tracksy - Password Reset OTP 🔐",
+    tempFileName: "forgotPasswordOTP",
+    tempFileData: {
+      email: existUser.email,
+      otp: otp,
+      logo: "https://i.ibb.co/XZwMnkH1/tracksy.jpg",
+    },
+  });
+};
+
+const resetPassword = async (
+  email: string,
+  otp: string,
+  newPassword: string
+) => {
+  const existUser = await User.findOne({ email });
+  if (!existUser) {
+    throw new AppError(401, "User is not available");
+  }
+  const otp_name = `otp_${existUser.email}`;
+  const stored_otp = await redisClient.get(otp_name);
+  if (!stored_otp) {
+    throw new AppError(
+      401,
+      "OTP is Invalid now. Please resend otp again or check otp again"
+    );
+  }
+  if (stored_otp !== otp) {
+    throw new AppError(401, "OTP is not matched");
+  }
+  const hashPassword = await bcrypt.hash(
+    newPassword,
+    Number(config.BCRYPT_SALT)
+  );
+  const result = await User.findOneAndUpdate(
+    { email: existUser.email },
+    { password: hashPassword, isVerified: true },
+    { new: true }
+  );
+  return result;
+};
+
 export const authServices = {
   registerAsDriver,
   registerAsUser,
   registerAdmin,
   login,
+  verifyUser,
+  sendForgetPassOTP,
+  resetPassword,
 };

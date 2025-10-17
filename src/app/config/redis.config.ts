@@ -1,7 +1,7 @@
 import { createClient } from "redis";
 import config from ".";
 
-const redisClient = createClient({
+export const redisClient = createClient({
   username: config.RedisUserName,
   password: config.RedisPassword,
   socket: {
