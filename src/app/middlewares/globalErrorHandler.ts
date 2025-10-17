@@ -29,6 +29,13 @@ export const handleGlobalErrorHandler = async (
   if (req?.file) {
     await removeImageFromCloudinary(req?.file?.path);
   }
+  if (req.files && req.files.length) {
+    const imageUrls = (req.files as Express.Multer.File[]).map(
+      (file) => file.path
+    );
+
+    await Promise.all(imageUrls.map((url) => removeImageFromCloudinary(url)));
+  }
 
   if (err.code === 11000) {
     const x = handleDuplicateError(err);

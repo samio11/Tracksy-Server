@@ -10,11 +10,12 @@ export enum EDriverStatus {
   on_trip = "on_trip",
 }
 export interface IDriver {
+  _id?: string;
   user: Types.ObjectId;
   vehicle: Types.ObjectId;
   licenseNumber: string;
   status: EDriverStatus;
   location: ILocation;
-  rating: number;
-  acceptedRide: number;
+  rating?: number;
+  acceptedRide?: number;
 }

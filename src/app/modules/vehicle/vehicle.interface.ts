@@ -5,6 +5,7 @@ export enum EVehicleType {
   Truck = "Truck",
 }
 export interface IVehicle {
+  _id?: string;
   owner: Types.ObjectId;
   model: string;
   year: string;
