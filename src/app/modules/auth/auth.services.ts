@@ -1,9 +1,11 @@
+import { AppError } from "../../errors/AppError";
 import { IDriver } from "../driver/driver.interface";
 import { Driver } from "../driver/driver.model";
 import { ERole, IUser } from "../user/user.interface";
 import { User } from "../user/user.model";
 import { IVehicle } from "../vehicle/vehicle.interface";
 import { Vehicle } from "../vehicle/vehicle.model";
+import bcrypt from "bcrypt";
 
 const registerAsUser = async (payload: IUser) => {
   const result = await User.create(payload);
@@ -71,4 +73,33 @@ const registerAsDriver = async (payload: TDriverType) => {
   }
 };
 
-export const authServices = { registerAsDriver, registerAsUser };
+const registerAdmin = async (payload: IUser) => {
+  const updatedPayload = { ...payload, role: ERole.admin };
+  const result = await User.create(updatedPayload);
+  return result;
+};
+
+const login = async (payload: { email: string; password: string }) => {
+  const existUser = await User.findOne({ email: payload.email });
+  if (!existUser) {
+    throw new AppError(401, "User is not exists");
+  }
+  const passMatch = await bcrypt.compare(
+    payload.password,
+    existUser.password as string
+  );
+  if (!passMatch) {
+    throw new AppError(401, "Invalid Password");
+  }
+  if (existUser.isVerified === false) {
+    throw new AppError(401, "Please Verify...");
+  }
+  return existUser;
+};
+
+export const authServices = {
+  registerAsDriver,
+  registerAsUser,
+  registerAdmin,
+  login,
+};

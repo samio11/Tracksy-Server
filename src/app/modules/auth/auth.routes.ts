@@ -4,10 +4,17 @@ import { authController } from "./auth.controller";
 
 const router = Router();
 
+router.post("/login", authController.login);
+
 router.post(
   "/register-rider",
   multerUpload.single("file"),
   authController.registerUser
+);
+router.post(
+  "/register-admin",
+  multerUpload.single("file"),
+  authController.registerAdmin
 );
 router.post(
   "/register-driver",
