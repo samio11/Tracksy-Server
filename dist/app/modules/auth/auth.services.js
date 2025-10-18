@@ -32,7 +32,7 @@ const registerAsUser = (payload) => __awaiter(void 0, void 0, void 0, function* 
             name: result.name,
             email: result.email,
             profilePic: result.avatar,
-            verifyLink: `http://localhost:5000/api/v1/auth/verify/${payload.email}`,
+            verifyLink: `https://tracksy-server.onrender.com/api/v1/auth/verify/${payload.email}`,
             logo: "https://i.ibb.co/XZwMnkH1/tracksy.jpg",
         },
     });
@@ -84,7 +84,7 @@ const registerAsDriver = (payload) => __awaiter(void 0, void 0, void 0, function
                 name: updateUserDriverProfile === null || updateUserDriverProfile === void 0 ? void 0 : updateUserDriverProfile.name,
                 email: updateUserDriverProfile === null || updateUserDriverProfile === void 0 ? void 0 : updateUserDriverProfile.email,
                 profilePic: updateUserDriverProfile === null || updateUserDriverProfile === void 0 ? void 0 : updateUserDriverProfile.avatar,
-                verifyLink: `http://localhost:5000/api/v1/auth/verify/${updateUserDriverProfile === null || updateUserDriverProfile === void 0 ? void 0 : updateUserDriverProfile.email}`,
+                verifyLink: `https://tracksy-server.onrender.com/api/v1/auth/verify/${updateUserDriverProfile === null || updateUserDriverProfile === void 0 ? void 0 : updateUserDriverProfile.email}`,
                 logo: "https://i.ibb.co/XZwMnkH1/tracksy.jpg",
             },
         });
@@ -111,7 +111,7 @@ const registerAdmin = (payload) => __awaiter(void 0, void 0, void 0, function* (
             name: result.name,
             email: result.email,
             profilePic: result.avatar,
-            verifyLink: `http://localhost:5000/api/v1/auth/verify/${payload.email}`,
+            verifyLink: `https://tracksy-server.onrender.com/api/v1/auth/verify/${payload.email}`,
             logo: "https://i.ibb.co/XZwMnkH1/tracksy.jpg",
         },
     });
