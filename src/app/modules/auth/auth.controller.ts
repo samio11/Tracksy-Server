@@ -1,3 +1,5 @@
+import config from "../../config";
+import { AppError } from "../../errors/AppError";
 import { catchAsync } from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
 import { setCookies } from "../../utils/setCookies";
@@ -97,6 +99,37 @@ const resetPassword = catchAsync(async (req, res, next) => {
   });
 });
 
+const logout = catchAsync(async (req, res, next) => {
+  res.clearCookie("accessToken", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "lax",
+  });
+  res.clearCookie("refreshToken", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "lax",
+  });
+  sendResponse(res, {
+    success: true,
+    message: "User Logout Done",
+    statusCode: 200,
+    data: "",
+  });
+});
+
+const googleLogin = catchAsync(async (req, res, next) => {
+  // console.log(req.user);
+  const user = req.user;
+
+  if (!user) {
+    throw new AppError(401, "user not found");
+  }
+  const token = await createUserToken(user);
+  await setCookies(res, token);
+  res.redirect(`${config.FRONTEND_URL}`);
+});
+
 export const authController = {
   registerUser,
   registerDriver,
@@ -105,4 +138,6 @@ export const authController = {
   verifyUser,
   sendForgetPassOTP,
   resetPassword,
+  logout,
+  googleLogin,
 };

@@ -28,11 +28,13 @@ const userSchema = new Schema<IUser>(
 );
 
 userSchema.pre("save", async function (next) {
-  this.password = await bcrypt.hash(
-    this.password as string,
-    Number(config.BCRYPT_SALT)
-  );
-  next();
+  if (this.password) {
+    this.password = await bcrypt.hash(
+      this.password as string,
+      Number(config.BCRYPT_SALT)
+    );
+    next();
+  }
 });
 
 userSchema.post("save", async function (doc, next) {
