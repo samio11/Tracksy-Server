@@ -59,8 +59,8 @@ class QueryBuilder {
         return this.modelQuery;
     }
     getMetaData() {
+        var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
-            var _a, _b;
             const totalDocument = yield this.modelQuery.model.countDocuments();
             const page = Number((_a = this === null || this === void 0 ? void 0 : this.query) === null || _a === void 0 ? void 0 : _a.page) || 1;
             const limit = Number((_b = this === null || this === void 0 ? void 0 : this.query) === null || _b === void 0 ? void 0 : _b.limit) || 10;

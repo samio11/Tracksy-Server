@@ -6,4 +6,4 @@ var ERole;
     ERole["rider"] = "Rider";
     ERole["driver"] = "Driver";
     ERole["admin"] = "Admin";
-})(ERole || (exports.ERole = ERole = {}));
+})(ERole = exports.ERole || (exports.ERole = {}));

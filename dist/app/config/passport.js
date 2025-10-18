@@ -22,8 +22,8 @@ passport_1.default.use(new passport_google_oauth20_1.Strategy({
     clientSecret: _1.default.GOOGLE_CLIENT_SECRET,
     callbackURL: _1.default.GOOGLE_CALLBACK_URL,
 }, function (accessToken, refreshToken, profile, done) {
+    var _a, _b;
     return __awaiter(this, void 0, void 0, function* () {
-        var _a, _b;
         try {
             const email = (_a = profile.emails) === null || _a === void 0 ? void 0 : _a[0].value;
             if (!email) {

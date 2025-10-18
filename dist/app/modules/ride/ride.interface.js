@@ -11,4 +11,4 @@ var ERideStatus;
     ERideStatus["completed"] = "completed";
     ERideStatus["cancelled"] = "cancelled";
     ERideStatus["no_driver"] = "no_driver";
-})(ERideStatus || (exports.ERideStatus = ERideStatus = {}));
+})(ERideStatus = exports.ERideStatus || (exports.ERideStatus = {}));
