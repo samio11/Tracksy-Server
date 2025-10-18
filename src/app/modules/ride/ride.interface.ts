@@ -9,7 +9,6 @@ export enum ERideStatus {
   started = "started",
   completed = "completed",
   cancelled = "cancelled",
-  no_driver = "no_driver",
 }
 
 export interface IRideHistory {

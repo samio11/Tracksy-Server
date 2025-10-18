@@ -17,7 +17,7 @@ const rideHistorySchema = new Schema<IRideHistory>(
 const rideSchema = new Schema<IRide>(
   {
     rider: { type: Schema.Types.ObjectId, required: true, ref: "User" },
-    driver: { type: Schema.Types.ObjectId, required: true, ref: "User" },
+    driver: { type: Schema.Types.ObjectId, ref: "User" },
     startRide: { type: locationSchema },
     endRide: { type: locationSchema },
     distance: { type: Number },
@@ -33,5 +33,10 @@ const rideSchema = new Schema<IRide>(
   },
   { versionKey: false, timestamps: true }
 );
+
+rideSchema.pre("save", async function (next) {
+  this.rideHistory.push({ status: ERideStatus.requested, time: new Date() });
+  next();
+});
 
 export const Ride = model<IRide>("Ride", rideSchema);
