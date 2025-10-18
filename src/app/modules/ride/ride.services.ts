@@ -1,9 +1,11 @@
 import { redisClient } from "../../config/redis.config";
 import { AppError } from "../../errors/AppError";
 import { calculateRideDetails } from "../../utils/calculateKmDistanceDuration";
+import { QueryBuilder } from "../../utils/QueryBuilder";
 import { sendEmail } from "../../utils/sendEmail";
+import { Driver } from "../driver/driver.model";
 import { User } from "../user/user.model";
-import { IRide } from "./ride.interface";
+import { ERideStatus, IRide } from "./ride.interface";
 import { Ride } from "./ride.model";
 
 export const createRide = async (payload: IRide) => {
@@ -21,7 +23,7 @@ export const createRide = async (payload: IRide) => {
       throw new AppError(401, "User not found");
     }
     const otp_name = `discout_user_${existUser.email}`;
-    console.log(otp_name);
+    // console.log(otp_name);
     const stored_otp = await redisClient.get(otp_name);
     if (!stored_otp) {
       throw new AppError(401, "Discount OTP is Invalid now.");
@@ -50,7 +52,7 @@ export const createRide = async (payload: IRide) => {
 const adminSendDiscountOTP = async (email: string) => {
   const otp = Math.floor(Math.random() * 999999) + 100000;
   const otp_name = `discout_user_${email}`;
-  console.log(otp_name, otp);
+  // console.log(otp_name, otp);
   await redisClient.set(otp_name, otp, {
     expiration: {
       type: "EX",
@@ -67,5 +69,183 @@ const adminSendDiscountOTP = async (email: string) => {
     },
   });
 };
+// Driver
+const acceptRideByDriver = async (rideId: string, driverId: string) => {
+  const session = await Ride.startSession();
+  session.startTransaction();
+  try {
+    const existRide = await Ride.findById(rideId);
+    if (!existRide) {
+      throw new AppError(401, "Ride is not exists");
+    }
+    if (existRide.rideStatus !== ERideStatus.requested) {
+      throw new AppError(401, "You Cant accept this ride now");
+    }
 
-export const rideServices = { createRide, adminSendDiscountOTP };
+    const updateRide = await Ride.findByIdAndUpdate(
+      rideId,
+      {
+        rideStatus: ERideStatus.accepted,
+        driver: driverId,
+        rideHistory: [
+          ...existRide.rideHistory,
+          { status: ERideStatus.accepted, time: new Date() },
+        ],
+      },
+      { new: true, session }
+    );
+
+    await session.commitTransaction();
+    session.endSession();
+
+    return updateRide;
+  } catch (err) {
+    await session.abortTransaction();
+    session.endSession();
+    throw err;
+  }
+};
+
+const startRideByDriver = async (rideId: string, driverId: string) => {
+  const session = await Ride.startSession();
+  session.startTransaction();
+  try {
+    const existRide = await Ride.findById(rideId);
+    if (!existRide) {
+      throw new AppError(401, "Ride is not exists");
+    }
+    if (existRide.driver?.toString() !== driverId) {
+      throw new AppError(401, "This Driver is not for this ride");
+    }
+
+    if (!existRide.rideHistory.find((x) => x.status === ERideStatus.accepted)) {
+      throw new AppError(401, "You Cant start this ride now");
+    }
+
+    const updateRide = await Ride.findByIdAndUpdate(
+      rideId,
+      {
+        rideStatus: ERideStatus.started,
+        rideHistory: [
+          ...existRide.rideHistory,
+          { status: ERideStatus.started, time: new Date() },
+        ],
+      },
+      { new: true, session }
+    );
+
+    await session.commitTransaction();
+    session.endSession();
+
+    return updateRide;
+  } catch (err) {
+    await session.abortTransaction();
+    session.endSession();
+    throw err;
+  }
+};
+
+const completeRideByDriver = async (rideId: string, driverId: string) => {
+  const session = await Ride.startSession();
+  session.startTransaction();
+  try {
+    const existRide = await Ride.findById(rideId);
+    if (!existRide) {
+      throw new AppError(401, "Ride is not exists");
+    }
+    if (existRide.driver?.toString() !== driverId) {
+      throw new AppError(401, "This Driver is not for this ride");
+    }
+
+    if (!existRide.rideHistory.find((x) => x.status === ERideStatus.started)) {
+      throw new AppError(401, "You Cant end this ride now");
+    }
+
+    const updateRide = await Ride.findByIdAndUpdate(
+      rideId,
+      {
+        rideStatus: ERideStatus.completed,
+        rideHistory: [
+          ...existRide.rideHistory,
+          { status: ERideStatus.completed, time: new Date() },
+        ],
+      },
+      { new: true, session }
+    );
+
+    const extractDriverIdFromUser = await User.findById(driverId);
+    const driverInfo = await Driver.findOne({
+      _id: extractDriverIdFromUser?.driverProfile,
+    });
+
+    const updateDriverIncome = await Driver.findByIdAndUpdate(
+      driverInfo?._id,
+      { $inc: { income: existRide.fare } },
+      { new: true, session }
+    );
+
+    await session.commitTransaction();
+    session.endSession();
+
+    return updateDriverIncome;
+  } catch (err) {
+    await session.abortTransaction();
+    session.endSession();
+    throw err;
+  }
+};
+//! User
+const cancelRide = async (rideId: string, riderId: string) => {
+  const existRide = await Ride.findById(rideId);
+  if (!existRide) {
+    throw new AppError(401, "Ride is not exists");
+  }
+  if (existRide.rider.toString() !== riderId) {
+    throw new AppError(401, "This Ride is not made by you");
+  }
+
+  if (existRide.rideStatus !== ERideStatus.requested) {
+    throw new AppError(401, "You Cant cancel this ride now");
+  }
+
+  const updateRide = await Ride.findByIdAndUpdate(
+    rideId,
+    {
+      rideStatus: ERideStatus.cancelled,
+      rideHistory: [
+        ...existRide.rideHistory,
+        { status: ERideStatus.cancelled, time: new Date() },
+      ],
+    },
+    { new: true }
+  );
+  return updateRide;
+};
+
+const findAllRidesData = async (query: Record<string, string>) => {
+  const rideQuery = new QueryBuilder(Ride.find(), query);
+  const rideData = await rideQuery
+    .filter()
+    .search(["rideStatus"])
+    .sort()
+    .fields()
+    .paginate();
+  const [data, meta] = await Promise.all([
+    rideData.build().populate("rider"),
+    rideQuery.getMetaData(),
+  ]);
+  return {
+    data,
+    meta,
+  };
+};
+
+export const rideServices = {
+  createRide,
+  adminSendDiscountOTP,
+  acceptRideByDriver,
+  startRideByDriver,
+  completeRideByDriver,
+  cancelRide,
+  findAllRidesData,
+};

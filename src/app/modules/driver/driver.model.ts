@@ -21,6 +21,7 @@ const driverSchema = new Schema<IDriver>(
     location: { type: locationSchema },
     rating: { type: Number, default: 0 },
     acceptedRide: { type: Number, default: 0 },
+    income: { type: Number, default: 0 },
   },
   {
     versionKey: false,

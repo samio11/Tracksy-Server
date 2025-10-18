@@ -18,4 +18,5 @@ export interface IDriver {
   location: ILocation;
   rating?: number;
   acceptedRide?: number;
+  income?: number;
 }

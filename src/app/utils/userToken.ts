@@ -4,7 +4,7 @@ import { generateToken } from "./jwt";
 
 export const createUserToken = (payload: Partial<IUser>) => {
   const userData = {
-    name: payload.name,
+    id: payload._id,
     email: payload.email,
     role: payload.role,
   };

@@ -11,5 +11,29 @@ router.post(
   checkAuth([ERole.admin]),
   rideController.adminSendDiscountOTP
 );
+//! Driver
+router.post(
+  "/accept-ride",
+  checkAuth([ERole.driver]),
+  rideController.acceptRideByDriver
+);
+router.post(
+  "/start-ride",
+  checkAuth([ERole.driver]),
+  rideController.startRideByDriver
+);
+router.post(
+  "/complete-ride",
+  checkAuth([ERole.driver]),
+  rideController.completeRideByDriver
+);
+//! Rider
+router.post(
+  "/cancel-ride",
+  checkAuth([ERole.rider]),
+  rideController.cancelRideByRider
+);
+
+router.get("/get-all", rideController.findAllRidesData);
 
 export const rideRoutes = router;

@@ -2,13 +2,11 @@ import { Types } from "mongoose";
 import { ILocation } from "../driver/driver.interface";
 
 export enum ERideStatus {
-  requested = "requested",
-  pending = "pending",
-  accepted = "accepted",
-  arrived = "arrived",
-  started = "started",
-  completed = "completed",
-  cancelled = "cancelled",
+  requested = "requested", // First
+  accepted = "accepted", // Driver will accept
+  started = "started", // Driver
+  completed = "completed", // Driver will complete
+  cancelled = "cancelled", // rider will cancel
 }
 
 export interface IRideHistory {
