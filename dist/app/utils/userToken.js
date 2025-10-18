@@ -8,7 +8,7 @@ const config_1 = __importDefault(require("../config"));
 const jwt_1 = require("./jwt");
 const createUserToken = (payload) => {
     const userData = {
-        name: payload.name,
+        id: payload._id,
         email: payload.email,
         role: payload.role,
     };

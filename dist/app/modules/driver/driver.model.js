@@ -21,6 +21,7 @@ const driverSchema = new mongoose_1.Schema({
     location: { type: exports.locationSchema },
     rating: { type: Number, default: 0 },
     acceptedRide: { type: Number, default: 0 },
+    income: { type: Number, default: 0 },
 }, {
     versionKey: false,
     timestamps: true,
