@@ -240,6 +240,11 @@ const findAllRidesData = async (query: Record<string, string>) => {
   };
 };
 
+const singleRideData = async (rideId: string) => {
+  const result = await Ride.findById(rideId);
+  return result;
+};
+
 export const rideServices = {
   createRide,
   adminSendDiscountOTP,
@@ -248,4 +253,5 @@ export const rideServices = {
   completeRideByDriver,
   cancelRide,
   findAllRidesData,
+  singleRideData,
 };

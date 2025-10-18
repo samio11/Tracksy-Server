@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { authRoutes } from "../modules/auth/auth.routes";
 import { rideRoutes } from "../modules/ride/ride.routes";
+import { userRoutes } from "../modules/user/user.routes";
 
 export const rootRouter = Router();
 
@@ -12,6 +13,10 @@ const excludingRouter = [
   {
     path: "/ride",
     element: rideRoutes,
+  },
+  {
+    path: "/user",
+    element: userRoutes,
   },
 ];
 

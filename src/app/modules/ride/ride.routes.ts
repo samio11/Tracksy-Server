@@ -35,5 +35,6 @@ router.post(
 );
 
 router.get("/get-all", rideController.findAllRidesData);
+router.get("/get/:id", rideController.singleRideData);
 
 export const rideRoutes = router;

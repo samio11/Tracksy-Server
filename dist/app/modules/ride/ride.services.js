@@ -212,6 +212,10 @@ const findAllRidesData = (query) => __awaiter(void 0, void 0, void 0, function* 
         meta,
     };
 });
+const singleRideData = (rideId) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield ride_model_1.Ride.findById(rideId);
+    return result;
+});
 exports.rideServices = {
     createRide: exports.createRide,
     adminSendDiscountOTP,
@@ -220,4 +224,5 @@ exports.rideServices = {
     completeRideByDriver,
     cancelRide,
     findAllRidesData,
+    singleRideData,
 };

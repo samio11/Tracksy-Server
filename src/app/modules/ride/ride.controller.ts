@@ -79,6 +79,16 @@ const findAllRidesData = catchAsync(async (req, res, next) => {
     data: result,
   });
 });
+const singleRideData = catchAsync(async (req, res, next) => {
+  const rideID = req.params.id;
+  const result = await rideServices.singleRideData(rideID);
+  sendResponse(res, {
+    success: true,
+    message: "Retrived A ride!!",
+    statusCode: 200,
+    data: result,
+  });
+});
 
 export const rideController = {
   createRide,
@@ -88,4 +98,5 @@ export const rideController = {
   completeRideByDriver,
   cancelRideByRider,
   findAllRidesData,
+  singleRideData,
 };
