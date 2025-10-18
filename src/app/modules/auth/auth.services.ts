@@ -20,7 +20,7 @@ const registerAsUser = async (payload: IUser) => {
       name: result.name,
       email: result.email,
       profilePic: result.avatar,
-      verifyLink: `http://localhost:5000/api/v1/auth/verify/${payload.email}`,
+      verifyLink: `https://tracksy-server.onrender.com/api/v1/auth/verify/${payload.email}`,
       logo: "https://i.ibb.co/XZwMnkH1/tracksy.jpg",
     },
   });
@@ -86,7 +86,7 @@ const registerAsDriver = async (payload: TDriverType) => {
         name: updateUserDriverProfile?.name,
         email: updateUserDriverProfile?.email,
         profilePic: updateUserDriverProfile?.avatar,
-        verifyLink: `http://localhost:5000/api/v1/auth/verify/${updateUserDriverProfile?.email}`,
+        verifyLink: `https://tracksy-server.onrender.com/api/v1/auth/verify/${updateUserDriverProfile?.email}`,
         logo: "https://i.ibb.co/XZwMnkH1/tracksy.jpg",
       },
     });
@@ -114,7 +114,7 @@ const registerAdmin = async (payload: IUser) => {
       name: result.name,
       email: result.email,
       profilePic: result.avatar,
-      verifyLink: `http://localhost:5000/api/v1/auth/verify/${payload.email}`,
+      verifyLink: `https://tracksy-server.onrender.com/api/v1/auth/verify/${payload.email}`,
       logo: "https://i.ibb.co/XZwMnkH1/tracksy.jpg",
     },
   });
