@@ -6,7 +6,7 @@ import { userControllers } from "./user.controller";
 const router = Router();
 
 router.patch(
-  "change-verification",
+  "/change-verification",
   checkAuth([ERole.admin]),
   userControllers.adminChangeUserVerification
 );

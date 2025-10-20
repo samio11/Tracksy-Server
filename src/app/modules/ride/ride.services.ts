@@ -180,7 +180,7 @@ const completeRideByDriver = async (rideId: string, driverId: string) => {
 
     const updateDriverIncome = await Driver.findByIdAndUpdate(
       driverInfo?._id,
-      { $inc: { income: existRide.fare } },
+      { $inc: { income: existRide.fare, acceptedRide: +1 } },
       { new: true, session }
     );
 
