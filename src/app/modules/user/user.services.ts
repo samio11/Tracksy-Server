@@ -1,5 +1,6 @@
 import { AppError } from "../../errors/AppError";
 import { Driver } from "../driver/driver.model";
+import { IVehicle } from "../vehicle/vehicle.interface";
 import { Vehicle } from "../vehicle/vehicle.model";
 import { ERole, IUser } from "./user.interface";
 import { User } from "./user.model";
@@ -45,4 +46,19 @@ const adminDeleteUser = async (userId: string) => {
   }
 };
 
-export const userServices = { adminChangeUserVerification, adminDeleteUser };
+// Delete Driver Car Info
+const deleteDriverVehicle = async (payload: string) => {
+  const result = await Vehicle.findByIdAndDelete(payload, { new: true });
+  return "";
+};
+const createDriverVehicle = async (payload: IVehicle) => {
+  const result = await Vehicle.create(payload);
+  return result;
+};
+
+export const userServices = {
+  adminChangeUserVerification,
+  adminDeleteUser,
+  deleteDriverVehicle,
+  createDriverVehicle,
+};

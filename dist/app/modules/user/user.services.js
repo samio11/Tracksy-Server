@@ -50,4 +50,18 @@ const adminDeleteUser = (userId) => __awaiter(void 0, void 0, void 0, function* 
         throw err;
     }
 });
-exports.userServices = { adminChangeUserVerification, adminDeleteUser };
+// Delete Driver Car Info
+const deleteDriverVehicle = (payload) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield vehicle_model_1.Vehicle.findByIdAndDelete(payload, { new: true });
+    return "";
+});
+const createDriverVehicle = (payload) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield vehicle_model_1.Vehicle.create(payload);
+    return result;
+});
+exports.userServices = {
+    adminChangeUserVerification,
+    adminDeleteUser,
+    deleteDriverVehicle,
+    createDriverVehicle,
+};

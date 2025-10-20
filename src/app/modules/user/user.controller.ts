@@ -16,7 +16,7 @@ const adminChangeUserVerification = catchAsync(async (req, res, next) => {
   });
 });
 const adminDeleteUser = catchAsync(async (req, res, next) => {
-  const { userId } = req.body;
+  const { userId } = req.params;
   const result = await userServices.adminDeleteUser(userId);
   sendResponse(res, {
     success: true,
@@ -25,5 +25,30 @@ const adminDeleteUser = catchAsync(async (req, res, next) => {
     data: result,
   });
 });
+const deleteDriverVehicle = catchAsync(async (req, res, next) => {
+  const vehicleId = req.params.id || "";
+  const result = await userServices.deleteDriverVehicle(vehicleId);
+  sendResponse(res, {
+    success: true,
+    statusCode: 200,
+    message: "Vehicle Delete Done",
+    data: result,
+  });
+});
+const createDriverVehicle = catchAsync(async (req, res, next) => {
+  const vehicleData = req.body;
+  const result = await userServices.createDriverVehicle(vehicleData);
+  sendResponse(res, {
+    success: true,
+    statusCode: 200,
+    message: "Vehicle create Done",
+    data: result,
+  });
+});
 
-export const userControllers = { adminChangeUserVerification, adminDeleteUser };
+export const userControllers = {
+  adminChangeUserVerification,
+  adminDeleteUser,
+  deleteDriverVehicle,
+  createDriverVehicle,
+};

@@ -24,7 +24,7 @@ const adminChangeUserVerification = (0, catchAsync_1.catchAsync)((req, res, next
     });
 }));
 const adminDeleteUser = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const { userId } = req.body;
+    const { userId } = req.params;
     const result = yield user_services_1.userServices.adminDeleteUser(userId);
     (0, sendResponse_1.sendResponse)(res, {
         success: true,
@@ -33,4 +33,29 @@ const adminDeleteUser = (0, catchAsync_1.catchAsync)((req, res, next) => __await
         data: result,
     });
 }));
-exports.userControllers = { adminChangeUserVerification, adminDeleteUser };
+const deleteDriverVehicle = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const vehicleId = req.params.id || "";
+    const result = yield user_services_1.userServices.deleteDriverVehicle(vehicleId);
+    (0, sendResponse_1.sendResponse)(res, {
+        success: true,
+        statusCode: 200,
+        message: "Vehicle Delete Done",
+        data: result,
+    });
+}));
+const createDriverVehicle = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const vehicleData = req.body;
+    const result = yield user_services_1.userServices.createDriverVehicle(vehicleData);
+    (0, sendResponse_1.sendResponse)(res, {
+        success: true,
+        statusCode: 200,
+        message: "Vehicle create Done",
+        data: result,
+    });
+}));
+exports.userControllers = {
+    adminChangeUserVerification,
+    adminDeleteUser,
+    deleteDriverVehicle,
+    createDriverVehicle,
+};

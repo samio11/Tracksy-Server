@@ -163,7 +163,7 @@ const completeRideByDriver = (rideId, driverId) => __awaiter(void 0, void 0, voi
         const driverInfo = yield driver_model_1.Driver.findOne({
             _id: extractDriverIdFromUser === null || extractDriverIdFromUser === void 0 ? void 0 : extractDriverIdFromUser.driverProfile,
         });
-        const updateDriverIncome = yield driver_model_1.Driver.findByIdAndUpdate(driverInfo === null || driverInfo === void 0 ? void 0 : driverInfo._id, { $inc: { income: existRide.fare } }, { new: true, session });
+        const updateDriverIncome = yield driver_model_1.Driver.findByIdAndUpdate(driverInfo === null || driverInfo === void 0 ? void 0 : driverInfo._id, { $inc: { income: existRide.fare, acceptedRide: +1 } }, { new: true, session });
         yield session.commitTransaction();
         session.endSession();
         return updateDriverIncome;
