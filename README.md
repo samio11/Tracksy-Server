@@ -11,6 +11,8 @@
 [![MongoDB](https://img.shields.io/badge/MongoDB-8.x-green.svg)](https://www.mongodb.com/)
 [![Express](https://img.shields.io/badge/Express-5.x-lightgrey.svg)](https://expressjs.com/)
 
+[🚀 Live API](https://tracksy-server.vercel.app) • [📖 Documentation](#-api-documentation) • [⚡ Quick Start](#-quick-start)
+
 </div>
 
 ---
