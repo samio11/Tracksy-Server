@@ -13,9 +13,12 @@ exports.rideServices = exports.createRide = void 0;
 const redis_config_1 = require("../../config/redis.config");
 const AppError_1 = require("../../errors/AppError");
 const calculateKmDistanceDuration_1 = require("../../utils/calculateKmDistanceDuration");
+const getTransectionId_1 = require("../../utils/getTransectionId");
 const QueryBuilder_1 = require("../../utils/QueryBuilder");
 const sendEmail_1 = require("../../utils/sendEmail");
-const driver_model_1 = require("../driver/driver.model");
+const payment_interface_1 = require("../payment/payment.interface");
+const payment_model_1 = require("../payment/payment.model");
+const sslCommerz_services_1 = require("../sslCommerz/sslCommerz.services");
 const user_model_1 = require("../user/user.model");
 const ride_interface_1 = require("./ride.interface");
 const ride_model_1 = require("./ride.model");
@@ -152,6 +155,10 @@ const completeRideByDriver = (rideId, driverId) => __awaiter(void 0, void 0, voi
         if (!existRide.rideHistory.find((x) => x.status === ride_interface_1.ERideStatus.started)) {
             throw new AppError_1.AppError(401, "You Cant end this ride now");
         }
+        const userInfoOfRide = yield user_model_1.User.findById(existRide.rider);
+        if (!userInfoOfRide) {
+            throw new AppError_1.AppError(401, "Rider not found");
+        }
         const updateRide = yield ride_model_1.Ride.findByIdAndUpdate(rideId, {
             rideStatus: ride_interface_1.ERideStatus.completed,
             rideHistory: [
@@ -159,14 +166,46 @@ const completeRideByDriver = (rideId, driverId) => __awaiter(void 0, void 0, voi
                 { status: ride_interface_1.ERideStatus.completed, time: new Date() },
             ],
         }, { new: true, session });
-        const extractDriverIdFromUser = yield user_model_1.User.findById(driverId);
-        const driverInfo = yield driver_model_1.Driver.findOne({
-            _id: extractDriverIdFromUser === null || extractDriverIdFromUser === void 0 ? void 0 : extractDriverIdFromUser.driverProfile,
-        });
-        const updateDriverIncome = yield driver_model_1.Driver.findByIdAndUpdate(driverInfo === null || driverInfo === void 0 ? void 0 : driverInfo._id, { $inc: { income: existRide.fare, acceptedRide: +1 } }, { new: true, session });
+        // const extractDriverIdFromUser = await User.findById(driverId);
+        // if (!extractDriverIdFromUser) {
+        //   throw new AppError(401, "Please fill this form");
+        // }
+        // const driverInfo = await Driver.findOne({
+        //   _id: extractDriverIdFromUser?.driverProfile,
+        // });
+        // const updateDriverIncome = await Driver.findByIdAndUpdate(
+        //   driverInfo?._id,
+        //   { $inc: { income: existRide.fare, acceptedRide: +1 } },
+        //   { new: true, session }
+        // );
+        const tran_id = (0, getTransectionId_1.getTransectionId)();
+        const sslCommerzPayload = {
+            name: userInfoOfRide.name,
+            email: userInfoOfRide.email,
+            phoneNumber: userInfoOfRide.phone,
+            transactionId: tran_id,
+            amount: Number(existRide.fare),
+        };
+        console.log(sslCommerzPayload);
+        const sslCommerz = yield sslCommerz_services_1.SSLService.sslPaymentInit(sslCommerzPayload);
+        console.log(sslCommerz);
+        const invoice_url = sslCommerz.GatewayPageURL;
+        const newPayment = yield payment_model_1.Payment.create([
+            {
+                ride: existRide._id,
+                user: userInfoOfRide._id,
+                amount: Number(existRide.fare),
+                status: payment_interface_1.EPaymentStatus.pending,
+                transactionId: tran_id,
+                invoiceUrl: invoice_url,
+            },
+        ], { session });
         yield session.commitTransaction();
         session.endSession();
-        return updateDriverIncome;
+        return {
+            payment_url: invoice_url,
+            payment_data: newPayment,
+        };
     }
     catch (err) {
         yield session.abortTransaction();

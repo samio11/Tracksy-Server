@@ -5,7 +5,8 @@ const express_1 = require("express");
 const auth_routes_1 = require("../modules/auth/auth.routes");
 const ride_routes_1 = require("../modules/ride/ride.routes");
 const user_routes_1 = require("../modules/user/user.routes");
-const rating_services_1 = require("../modules/rating/rating.services");
+const payment_routes_1 = require("../modules/payment/payment.routes");
+const rating_route_1 = require("../modules/rating/rating.route");
 exports.rootRouter = (0, express_1.Router)();
 const excludingRouter = [
     {
@@ -22,7 +23,11 @@ const excludingRouter = [
     },
     {
         path: "/rating",
-        element: rating_services_1.ratingRoutes,
+        element: rating_route_1.ratingRoutes,
+    },
+    {
+        path: "/payment",
+        element: payment_routes_1.paymentRoutes,
     },
 ];
 excludingRouter.forEach((x) => exports.rootRouter.use(x.path, x.element));

@@ -1,9 +1,14 @@
 import { redisClient } from "../../config/redis.config";
 import { AppError } from "../../errors/AppError";
 import { calculateRideDetails } from "../../utils/calculateKmDistanceDuration";
+import { getTransectionId } from "../../utils/getTransectionId";
 import { QueryBuilder } from "../../utils/QueryBuilder";
 import { sendEmail } from "../../utils/sendEmail";
 import { Driver } from "../driver/driver.model";
+import { EPaymentStatus } from "../payment/payment.interface";
+import { Payment } from "../payment/payment.model";
+import { ISSLCommerz } from "../sslCommerz/sslCommerz.interface";
+import { SSLService } from "../sslCommerz/sslCommerz.services";
 import { User } from "../user/user.model";
 import { ERideStatus, IRide } from "./ride.interface";
 import { Ride } from "./ride.model";
@@ -160,6 +165,10 @@ const completeRideByDriver = async (rideId: string, driverId: string) => {
     if (!existRide.rideHistory.find((x) => x.status === ERideStatus.started)) {
       throw new AppError(401, "You Cant end this ride now");
     }
+    const userInfoOfRide = await User.findById(existRide.rider);
+    if (!userInfoOfRide) {
+      throw new AppError(401, "Rider not found");
+    }
 
     const updateRide = await Ride.findByIdAndUpdate(
       rideId,
@@ -173,21 +182,54 @@ const completeRideByDriver = async (rideId: string, driverId: string) => {
       { new: true, session }
     );
 
-    const extractDriverIdFromUser = await User.findById(driverId);
-    const driverInfo = await Driver.findOne({
-      _id: extractDriverIdFromUser?.driverProfile,
-    });
+    // const extractDriverIdFromUser = await User.findById(driverId);
+    // if (!extractDriverIdFromUser) {
+    //   throw new AppError(401, "Please fill this form");
+    // }
+    // const driverInfo = await Driver.findOne({
+    //   _id: extractDriverIdFromUser?.driverProfile,
+    // });
 
-    const updateDriverIncome = await Driver.findByIdAndUpdate(
-      driverInfo?._id,
-      { $inc: { income: existRide.fare, acceptedRide: +1 } },
-      { new: true, session }
+    // const updateDriverIncome = await Driver.findByIdAndUpdate(
+    //   driverInfo?._id,
+    //   { $inc: { income: existRide.fare, acceptedRide: +1 } },
+    //   { new: true, session }
+    // );
+    const tran_id = getTransectionId();
+
+    const sslCommerzPayload: ISSLCommerz = {
+      name: userInfoOfRide.name as string,
+      email: userInfoOfRide.email as string,
+      phoneNumber: userInfoOfRide.phone as string,
+      transactionId: tran_id,
+      amount: Number(existRide.fare),
+    };
+    console.log(sslCommerzPayload);
+    const sslCommerz = await SSLService.sslPaymentInit(sslCommerzPayload);
+    console.log(sslCommerz);
+    const invoice_url = sslCommerz.GatewayPageURL;
+
+    const newPayment = await Payment.create(
+      [
+        {
+          ride: existRide._id,
+          user: userInfoOfRide._id,
+          amount: Number(existRide.fare),
+          status: EPaymentStatus.pending,
+          transactionId: tran_id,
+          invoiceUrl: invoice_url,
+        },
+      ],
+      { session }
     );
 
     await session.commitTransaction();
     session.endSession();
 
-    return updateDriverIncome;
+    return {
+      payment_url: invoice_url,
+      payment_data: newPayment,
+    };
   } catch (err) {
     await session.abortTransaction();
     session.endSession();
