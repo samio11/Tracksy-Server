@@ -141,7 +141,7 @@ const startRideByDriver = (rideId, driverId) => __awaiter(void 0, void 0, void 0
     }
 });
 const completeRideByDriver = (rideId, driverId) => __awaiter(void 0, void 0, void 0, function* () {
-    var _b;
+    var _a;
     const session = yield ride_model_1.Ride.startSession();
     session.startTransaction();
     try {
@@ -149,7 +149,7 @@ const completeRideByDriver = (rideId, driverId) => __awaiter(void 0, void 0, voi
         if (!existRide) {
             throw new AppError_1.AppError(401, "Ride is not exists");
         }
-        if (((_b = existRide.driver) === null || _b === void 0 ? void 0 : _b.toString()) !== driverId) {
+        if (((_a = existRide.driver) === null || _a === void 0 ? void 0 : _a.toString()) !== driverId) {
             throw new AppError_1.AppError(401, "This Driver is not for this ride");
         }
         if (!existRide.rideHistory.find((x) => x.status === ride_interface_1.ERideStatus.started)) {

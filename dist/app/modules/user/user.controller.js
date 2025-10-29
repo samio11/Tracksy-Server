@@ -53,9 +53,43 @@ const createDriverVehicle = (0, catchAsync_1.catchAsync)((req, res, next) => __a
         data: result,
     });
 }));
+const getAllUser = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const query = req === null || req === void 0 ? void 0 : req.query;
+    const result = yield user_services_1.userServices.getAllUser(query);
+    (0, sendResponse_1.sendResponse)(res, {
+        success: true,
+        statusCode: 200,
+        message: "User Data Getting Done",
+        data: result,
+    });
+}));
+const getAUser = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req === null || req === void 0 ? void 0 : req.params;
+    const result = yield user_services_1.userServices.getAUser(id);
+    (0, sendResponse_1.sendResponse)(res, {
+        success: true,
+        statusCode: 200,
+        message: "User Data Getting Done",
+        data: result,
+    });
+}));
+const updateAUser = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req === null || req === void 0 ? void 0 : req.params;
+    const payload = req.body;
+    const result = yield user_services_1.userServices.updateUserData(id, payload);
+    (0, sendResponse_1.sendResponse)(res, {
+        success: true,
+        statusCode: 200,
+        message: "User Data Update Done",
+        data: result,
+    });
+}));
 exports.userControllers = {
     adminChangeUserVerification,
     adminDeleteUser,
     deleteDriverVehicle,
     createDriverVehicle,
+    getAllUser,
+    getAUser,
+    updateAUser,
 };

@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.userServices = void 0;
 const AppError_1 = require("../../errors/AppError");
+const QueryBuilder_1 = require("../../utils/QueryBuilder");
 const driver_model_1 = require("../driver/driver.model");
 const vehicle_model_1 = require("../vehicle/vehicle.model");
 const user_interface_1 = require("./user.interface");
@@ -59,9 +60,35 @@ const createDriverVehicle = (payload) => __awaiter(void 0, void 0, void 0, funct
     const result = yield vehicle_model_1.Vehicle.create(payload);
     return result;
 });
+const getAllUser = (query) => __awaiter(void 0, void 0, void 0, function* () {
+    const userQuery = new QueryBuilder_1.QueryBuilder(user_model_1.User.find(), query);
+    const userData = yield userQuery
+        .filter()
+        .search(["email"])
+        .sort()
+        .fields()
+        .paginate();
+    const [data, meta] = yield Promise.all([
+        userData.build(),
+        userData.getMetaData(),
+    ]);
+    return { data, meta };
+});
+const getAUser = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const result = yield ((_a = user_model_1.User.findById(id)) === null || _a === void 0 ? void 0 : _a.populate("driverProfile"));
+    return result;
+});
+const updateUserData = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield user_model_1.User.findByIdAndUpdate(id, payload, { new: true });
+    return result;
+});
 exports.userServices = {
     adminChangeUserVerification,
     adminDeleteUser,
     deleteDriverVehicle,
     createDriverVehicle,
+    getAllUser,
+    getAUser,
+    updateUserData,
 };

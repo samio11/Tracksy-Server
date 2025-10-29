@@ -28,4 +28,17 @@ router.delete(
   userControllers.deleteDriverVehicle
 );
 
+router.patch(
+  "/update/:id",
+  checkAuth(Object.values(ERole)),
+  userControllers.updateAUser
+);
+
+router.get("/get", checkAuth([ERole.admin]), userControllers.getAllUser);
+router.get(
+  "/get/:id",
+  checkAuth(Object.values(ERole)),
+  userControllers.getAUser
+);
+
 export const userRoutes = router;

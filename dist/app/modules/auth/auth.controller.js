@@ -32,8 +32,8 @@ const registerUser = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(
     });
 }));
 const registerAdmin = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    var _c, _d;
-    const payload = Object.assign(Object.assign({}, JSON.parse((_c = req === null || req === void 0 ? void 0 : req.body) === null || _c === void 0 ? void 0 : _c.data)), { avatar: (_d = req === null || req === void 0 ? void 0 : req.file) === null || _d === void 0 ? void 0 : _d.path });
+    var _a, _b;
+    const payload = Object.assign(Object.assign({}, JSON.parse((_a = req === null || req === void 0 ? void 0 : req.body) === null || _a === void 0 ? void 0 : _a.data)), { avatar: (_b = req === null || req === void 0 ? void 0 : req.file) === null || _b === void 0 ? void 0 : _b.path });
     //   console.log(payload);
     const result = yield auth_services_1.authServices.registerAdmin(payload);
     (0, sendResponse_1.sendResponse)(res, {
@@ -55,8 +55,8 @@ const verifyUser = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(vo
     });
 }));
 const registerDriver = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    var _e, _f, _g;
-    const payload = Object.assign(Object.assign({}, JSON.parse((_e = req === null || req === void 0 ? void 0 : req.body) === null || _e === void 0 ? void 0 : _e.data)), { avatar: (_f = req === null || req === void 0 ? void 0 : req.files) === null || _f === void 0 ? void 0 : _f[0].path, vehicleImage: (_g = req === null || req === void 0 ? void 0 : req.files) === null || _g === void 0 ? void 0 : _g[1].path });
+    var _a, _b, _c;
+    const payload = Object.assign(Object.assign({}, JSON.parse((_a = req === null || req === void 0 ? void 0 : req.body) === null || _a === void 0 ? void 0 : _a.data)), { avatar: (_b = req === null || req === void 0 ? void 0 : req.files) === null || _b === void 0 ? void 0 : _b[0].path, vehicleImage: (_c = req === null || req === void 0 ? void 0 : req.files) === null || _c === void 0 ? void 0 : _c[1].path });
     const result = yield auth_services_1.authServices.registerAsDriver(payload);
     (0, sendResponse_1.sendResponse)(res, {
         success: true,

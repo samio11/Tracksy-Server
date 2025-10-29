@@ -6,4 +6,4 @@ var EDriverStatus;
     EDriverStatus["offline"] = "offline";
     EDriverStatus["available"] = "available";
     EDriverStatus["on_trip"] = "on_trip";
-})(EDriverStatus = exports.EDriverStatus || (exports.EDriverStatus = {}));
+})(EDriverStatus || (exports.EDriverStatus = EDriverStatus = {}));

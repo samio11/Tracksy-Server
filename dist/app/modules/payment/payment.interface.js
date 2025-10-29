@@ -7,4 +7,4 @@ var EPaymentStatus;
     EPaymentStatus["cancel"] = "cancel";
     EPaymentStatus["fail"] = "fail";
     EPaymentStatus["complete"] = "complete";
-})(EPaymentStatus = exports.EPaymentStatus || (exports.EPaymentStatus = {}));
+})(EPaymentStatus || (exports.EPaymentStatus = EPaymentStatus = {}));

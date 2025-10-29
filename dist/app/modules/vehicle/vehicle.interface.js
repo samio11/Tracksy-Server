@@ -6,4 +6,4 @@ var EVehicleType;
     EVehicleType["Car"] = "Car";
     EVehicleType["Bike"] = "Bike";
     EVehicleType["Truck"] = "Truck";
-})(EVehicleType = exports.EVehicleType || (exports.EVehicleType = {}));
+})(EVehicleType || (exports.EVehicleType = EVehicleType = {}));

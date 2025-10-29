@@ -26,7 +26,7 @@ const transporter = nodemailer_1.default.createTransport({
         pass: config_1.default.SMTP_PASS,
     },
 });
-const sendEmail = ({ to, subject, tempFileName, tempFileData, attachments, }) => __awaiter(void 0, void 0, void 0, function* () {
+const sendEmail = (_a) => __awaiter(void 0, [_a], void 0, function* ({ to, subject, tempFileName, tempFileData, attachments, }) {
     try {
         const tempPath = path_1.default.join(__dirname, `templates/${tempFileName}.ejs`);
         const html = yield ejs_1.default.renderFile(tempPath, tempFileData);

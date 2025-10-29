@@ -9,5 +9,5 @@ const routes = (0, express_1.Router)();
 routes.post("/success", payment_controller_1.paymentController.successfulPayment);
 routes.post("/fail", payment_controller_1.paymentController.failPayment);
 routes.post("/cancel", payment_controller_1.paymentController.canceledPayment);
-routes.get("/get-admin", (0, checkAuth_1.checkAuth)([user_interface_1.ERole.admin]), payment_controller_1.paymentController.getAllPaymentData);
+routes.get("/get-payment", (0, checkAuth_1.checkAuth)([user_interface_1.ERole.admin]), payment_controller_1.paymentController.getAllPaymentData);
 exports.paymentRoutes = routes;

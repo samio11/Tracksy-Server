@@ -10,7 +10,7 @@ routes.post("/fail", paymentController.failPayment);
 routes.post("/cancel", paymentController.canceledPayment);
 
 routes.get(
-  "/get-admin",
+  "/get-payment",
   checkAuth([ERole.admin]),
   paymentController.getAllPaymentData
 );

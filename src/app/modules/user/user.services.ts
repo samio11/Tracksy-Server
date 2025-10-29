@@ -1,4 +1,5 @@
 import { AppError } from "../../errors/AppError";
+import { QueryBuilder } from "../../utils/QueryBuilder";
 import { Driver } from "../driver/driver.model";
 import { IVehicle } from "../vehicle/vehicle.interface";
 import { Vehicle } from "../vehicle/vehicle.model";
@@ -56,9 +57,38 @@ const createDriverVehicle = async (payload: IVehicle) => {
   return result;
 };
 
+const getAllUser = async (query: Record<string, string>) => {
+  const userQuery = new QueryBuilder(User.find(), query);
+  const userData = await userQuery
+    .filter()
+    .search(["email"])
+    .sort()
+    .fields()
+    .paginate();
+
+  const [data, meta] = await Promise.all([
+    userData.build(),
+    userData.getMetaData(),
+  ]);
+  return { data, meta };
+};
+
+const getAUser = async (id: string) => {
+  const result = await User.findById(id)?.populate("driverProfile");
+  return result;
+};
+
+const updateUserData = async (id: string, payload: Partial<IUser>) => {
+  const result = await User.findByIdAndUpdate(id, payload, { new: true });
+  return result;
+};
+
 export const userServices = {
   adminChangeUserVerification,
   adminDeleteUser,
   deleteDriverVehicle,
   createDriverVehicle,
+  getAllUser,
+  getAUser,
+  updateUserData,
 };
