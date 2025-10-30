@@ -42,7 +42,7 @@ const getAllRating = (query) => __awaiter(void 0, void 0, void 0, function* () {
     const ratingQuery = new QueryBuilder_1.QueryBuilder(rating_model_1.Rating.find(), query);
     const ratingData = ratingQuery
         .filter()
-        .search(["score"])
+        // .search(["score"])
         .sort()
         .fields()
         .paginate();

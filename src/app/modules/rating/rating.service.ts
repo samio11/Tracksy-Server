@@ -33,7 +33,7 @@ const getAllRating = async (query: Record<string, string>) => {
   const ratingQuery = new QueryBuilder(Rating.find(), query);
   const ratingData = ratingQuery
     .filter()
-    .search(["score"])
+    // .search(["score"])
     .sort()
     .fields()
     .paginate();
