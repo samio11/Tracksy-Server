@@ -52,4 +52,11 @@ const getAllRating = (query) => __awaiter(void 0, void 0, void 0, function* () {
     ]);
     return { data, meta };
 });
-exports.ratingServices = { createRating, getAllRating };
+const getUserRating = (riderId) => __awaiter(void 0, void 0, void 0, function* () {
+    const existRide = yield rating_model_1.Rating.find({ from: riderId });
+    if (!existRide) {
+        throw new AppError_1.AppError(401, "Riders Ride is not available");
+    }
+    return existRide;
+});
+exports.ratingServices = { createRating, getAllRating, getUserRating };

@@ -33,4 +33,14 @@ const getAllRating = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(
         data: result,
     });
 }));
-exports.ratingController = { createRating, getAllRating };
+const getRatingByUser = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req === null || req === void 0 ? void 0 : req.user;
+    const result = yield rating_service_1.ratingServices.getUserRating(id);
+    (0, sendResponse_1.sendResponse)(res, {
+        success: true,
+        message: "Get all rating Data",
+        statusCode: 200,
+        data: result,
+    });
+}));
+exports.ratingController = { createRating, getAllRating, getRatingByUser };

@@ -6,10 +6,7 @@ import { ratingController } from "./rating.controller";
 const router = Router();
 
 router.post("/create", checkAuth([ERole.rider]), ratingController.createRating);
-router.get(
-  "/get-all",
-  checkAuth([...Object.values(ERole)]),
-  ratingController.getAllRating
-);
+router.get("/get-all", checkAuth([ERole.admin]), ratingController.getAllRating);
+router.get("/get", checkAuth([ERole.rider]), ratingController.getAllRating);
 
 export const ratingRoutes = router;

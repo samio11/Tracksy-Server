@@ -8,4 +8,4 @@ var ERideStatus;
     ERideStatus["started"] = "started";
     ERideStatus["completed"] = "completed";
     ERideStatus["cancelled"] = "cancelled";
-})(ERideStatus || (exports.ERideStatus = ERideStatus = {}));
+})(ERideStatus = exports.ERideStatus || (exports.ERideStatus = {}));

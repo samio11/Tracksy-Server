@@ -7,5 +7,6 @@ const user_interface_1 = require("../user/user.interface");
 const rating_controller_1 = require("./rating.controller");
 const router = (0, express_1.Router)();
 router.post("/create", (0, checkAuth_1.checkAuth)([user_interface_1.ERole.rider]), rating_controller_1.ratingController.createRating);
-router.get("/get-all", (0, checkAuth_1.checkAuth)([...Object.values(user_interface_1.ERole)]), rating_controller_1.ratingController.getAllRating);
+router.get("/get-all", (0, checkAuth_1.checkAuth)([user_interface_1.ERole.admin]), rating_controller_1.ratingController.getAllRating);
+router.get("/get", (0, checkAuth_1.checkAuth)([user_interface_1.ERole.rider]), rating_controller_1.ratingController.getAllRating);
 exports.ratingRoutes = router;

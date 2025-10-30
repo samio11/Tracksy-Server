@@ -44,4 +44,12 @@ const getAllRating = async (query: Record<string, string>) => {
   return { data, meta };
 };
 
-export const ratingServices = { createRating, getAllRating };
+const getUserRating = async (riderId: string) => {
+  const existRide = await Rating.find({ from: riderId });
+  if (!existRide) {
+    throw new AppError(401, "Riders Ride is not available");
+  }
+  return existRide;
+};
+
+export const ratingServices = { createRating, getAllRating, getUserRating };
