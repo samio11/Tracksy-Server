@@ -40,5 +40,10 @@ router.get(
   checkAuth(Object.values(ERole)),
   userControllers.getAUser
 );
+router.get(
+  "/admin-states",
+  checkAuth([ERole.admin]),
+  userControllers.getAdminStates
+);
 
 export const userRoutes = router;

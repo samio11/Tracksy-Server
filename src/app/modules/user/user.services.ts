@@ -1,6 +1,7 @@
 import { AppError } from "../../errors/AppError";
 import { QueryBuilder } from "../../utils/QueryBuilder";
 import { Driver } from "../driver/driver.model";
+import { Ride } from "../ride/ride.model";
 import { IVehicle } from "../vehicle/vehicle.interface";
 import { Vehicle } from "../vehicle/vehicle.model";
 import { ERole, IUser } from "./user.interface";
@@ -83,6 +84,59 @@ const updateUserData = async (id: string, payload: Partial<IUser>) => {
   return result;
 };
 
+interface IAdminStats {
+  totalRides: number;
+  totalIncome: number;
+  totalUsers: number;
+  totalDrivers: number;
+  ridesByDay?: { date: string; rides: number }[];
+}
+
+export const getAdminStats = async (): Promise<IAdminStats> => {
+  // Total rides and total income
+  const rideStats = await Ride.aggregate([
+    {
+      $group: {
+        _id: null,
+        totalRides: { $sum: 1 },
+        totalIncome: { $sum: "$fare" },
+      },
+    },
+  ]);
+
+  // Total users
+  const totalUsers = await User.countDocuments({ role: ERole.rider });
+  const totalDrivers = await User.countDocuments({ role: ERole.driver });
+
+  // Optional: Rides by day for chart
+  const ridesByDay = await Ride.aggregate([
+    {
+      $group: {
+        _id: {
+          $dateToString: { format: "%Y-%m-%d", date: "$createdAt" },
+        },
+        rides: { $sum: 1 },
+      },
+    },
+    { $sort: { _id: 1 } },
+    {
+      $project: {
+        date: "$_id",
+        rides: 1,
+        _id: 0,
+      },
+    },
+  ]);
+
+  return {
+    totalRides: rideStats[0]?.totalRides || 0,
+    totalIncome: rideStats[0]?.totalIncome || 0,
+    totalUsers,
+    totalDrivers,
+    ridesByDay,
+  };
+};
+
 export const userServices = {
   adminChangeUserVerification,
   adminDeleteUser,
@@ -91,4 +145,5 @@ export const userServices = {
   getAllUser,
   getAUser,
   updateUserData,
+  getAdminStats,
 };

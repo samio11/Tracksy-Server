@@ -76,6 +76,15 @@ const updateAUser = catchAsync(async (req, res, next) => {
     data: result,
   });
 });
+const getAdminStates = catchAsync(async (req, res, next) => {
+  const result = await userServices.getAdminStats();
+  sendResponse(res, {
+    success: true,
+    statusCode: 200,
+    message: "Admin Data getting Done",
+    data: result,
+  });
+});
 
 export const userControllers = {
   adminChangeUserVerification,
@@ -85,4 +94,5 @@ export const userControllers = {
   getAllUser,
   getAUser,
   updateAUser,
+  getAdminStates,
 };

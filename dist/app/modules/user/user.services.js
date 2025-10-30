@@ -9,10 +9,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.userServices = void 0;
+exports.userServices = exports.getAdminStats = void 0;
 const AppError_1 = require("../../errors/AppError");
 const QueryBuilder_1 = require("../../utils/QueryBuilder");
 const driver_model_1 = require("../driver/driver.model");
+const ride_model_1 = require("../ride/ride.model");
 const vehicle_model_1 = require("../vehicle/vehicle.model");
 const user_interface_1 = require("./user.interface");
 const user_model_1 = require("./user.model");
@@ -83,6 +84,49 @@ const updateUserData = (id, payload) => __awaiter(void 0, void 0, void 0, functi
     const result = yield user_model_1.User.findByIdAndUpdate(id, payload, { new: true });
     return result;
 });
+const getAdminStats = () => __awaiter(void 0, void 0, void 0, function* () {
+    var _b, _c;
+    // Total rides and total income
+    const rideStats = yield ride_model_1.Ride.aggregate([
+        {
+            $group: {
+                _id: null,
+                totalRides: { $sum: 1 },
+                totalIncome: { $sum: "$fare" },
+            },
+        },
+    ]);
+    // Total users
+    const totalUsers = yield user_model_1.User.countDocuments({ role: user_interface_1.ERole.rider });
+    const totalDrivers = yield user_model_1.User.countDocuments({ role: user_interface_1.ERole.driver });
+    // Optional: Rides by day for chart
+    const ridesByDay = yield ride_model_1.Ride.aggregate([
+        {
+            $group: {
+                _id: {
+                    $dateToString: { format: "%Y-%m-%d", date: "$createdAt" },
+                },
+                rides: { $sum: 1 },
+            },
+        },
+        { $sort: { _id: 1 } },
+        {
+            $project: {
+                date: "$_id",
+                rides: 1,
+                _id: 0,
+            },
+        },
+    ]);
+    return {
+        totalRides: ((_b = rideStats[0]) === null || _b === void 0 ? void 0 : _b.totalRides) || 0,
+        totalIncome: ((_c = rideStats[0]) === null || _c === void 0 ? void 0 : _c.totalIncome) || 0,
+        totalUsers,
+        totalDrivers,
+        ridesByDay,
+    };
+});
+exports.getAdminStats = getAdminStats;
 exports.userServices = {
     adminChangeUserVerification,
     adminDeleteUser,
@@ -91,4 +135,5 @@ exports.userServices = {
     getAllUser,
     getAUser,
     updateUserData,
+    getAdminStats: exports.getAdminStats,
 };

@@ -13,4 +13,5 @@ router.delete("/driver/delete/vehicle/:id", (0, checkAuth_1.checkAuth)([user_int
 router.patch("/update/:id", (0, checkAuth_1.checkAuth)(Object.values(user_interface_1.ERole)), user_controller_1.userControllers.updateAUser);
 router.get("/get", (0, checkAuth_1.checkAuth)([user_interface_1.ERole.admin]), user_controller_1.userControllers.getAllUser);
 router.get("/get/:id", (0, checkAuth_1.checkAuth)(Object.values(user_interface_1.ERole)), user_controller_1.userControllers.getAUser);
+router.get("/admin-states", (0, checkAuth_1.checkAuth)([user_interface_1.ERole.admin]), user_controller_1.userControllers.getAdminStates);
 exports.userRoutes = router;

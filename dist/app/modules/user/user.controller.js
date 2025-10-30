@@ -84,6 +84,15 @@ const updateAUser = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(v
         data: result,
     });
 }));
+const getAdminStates = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield user_services_1.userServices.getAdminStats();
+    (0, sendResponse_1.sendResponse)(res, {
+        success: true,
+        statusCode: 200,
+        message: "Admin Data getting Done",
+        data: result,
+    });
+}));
 exports.userControllers = {
     adminChangeUserVerification,
     adminDeleteUser,
@@ -92,4 +101,5 @@ exports.userControllers = {
     getAllUser,
     getAUser,
     updateAUser,
+    getAdminStates,
 };
