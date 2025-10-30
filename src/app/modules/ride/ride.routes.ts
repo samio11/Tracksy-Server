@@ -36,5 +36,10 @@ router.post(
 
 router.get("/get-all", rideController.findAllRidesData);
 router.get("/get/:id", rideController.singleRideData);
+router.get(
+  "/get-ride-info",
+  checkAuth([ERole.rider]),
+  rideController.riderGetHisRideDetails
+);
 
 export const rideRoutes = router;

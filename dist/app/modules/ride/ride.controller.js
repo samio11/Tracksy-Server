@@ -97,6 +97,16 @@ const singleRideData = (0, catchAsync_1.catchAsync)((req, res, next) => __awaite
         data: result,
     });
 }));
+const riderGetHisRideDetails = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.user;
+    const result = yield ride_services_1.rideServices.riderGetHisRideDetails(id);
+    (0, sendResponse_1.sendResponse)(res, {
+        success: true,
+        message: "Rider Get his Ride Data!!",
+        statusCode: 200,
+        data: result,
+    });
+}));
 exports.rideController = {
     createRide,
     adminSendDiscountOTP,
@@ -106,4 +116,5 @@ exports.rideController = {
     cancelRideByRider,
     findAllRidesData,
     singleRideData,
+    riderGetHisRideDetails,
 };

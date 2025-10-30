@@ -287,6 +287,11 @@ const singleRideData = async (rideId: string) => {
   return result;
 };
 
+const riderGetHisRideDetails = async (riderId: string) => {
+  const result = await Ride.find({ rider: riderId });
+  return result;
+};
+
 export const rideServices = {
   createRide,
   adminSendDiscountOTP,
@@ -296,4 +301,5 @@ export const rideServices = {
   cancelRide,
   findAllRidesData,
   singleRideData,
+  riderGetHisRideDetails,
 };

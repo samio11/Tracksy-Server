@@ -255,6 +255,10 @@ const singleRideData = (rideId) => __awaiter(void 0, void 0, void 0, function* (
     const result = yield ride_model_1.Ride.findById(rideId);
     return result;
 });
+const riderGetHisRideDetails = (riderId) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield ride_model_1.Ride.find({ rider: riderId });
+    return result;
+});
 exports.rideServices = {
     createRide: exports.createRide,
     adminSendDiscountOTP,
@@ -264,4 +268,5 @@ exports.rideServices = {
     cancelRide,
     findAllRidesData,
     singleRideData,
+    riderGetHisRideDetails,
 };

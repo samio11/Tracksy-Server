@@ -89,6 +89,16 @@ const singleRideData = catchAsync(async (req, res, next) => {
     data: result,
   });
 });
+const riderGetHisRideDetails = catchAsync(async (req, res, next) => {
+  const { id } = req.user as JwtPayload;
+  const result = await rideServices.riderGetHisRideDetails(id);
+  sendResponse(res, {
+    success: true,
+    message: "Rider Get his Ride Data!!",
+    statusCode: 200,
+    data: result,
+  });
+});
 
 export const rideController = {
   createRide,
@@ -99,4 +109,5 @@ export const rideController = {
   cancelRideByRider,
   findAllRidesData,
   singleRideData,
+  riderGetHisRideDetails,
 };

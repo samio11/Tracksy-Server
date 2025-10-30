@@ -16,4 +16,5 @@ router.post("/complete-ride", (0, checkAuth_1.checkAuth)([user_interface_1.ERole
 router.post("/cancel-ride", (0, checkAuth_1.checkAuth)([user_interface_1.ERole.rider]), ride_controller_1.rideController.cancelRideByRider);
 router.get("/get-all", ride_controller_1.rideController.findAllRidesData);
 router.get("/get/:id", ride_controller_1.rideController.singleRideData);
+router.get("/get-ride-info", (0, checkAuth_1.checkAuth)([user_interface_1.ERole.rider]), ride_controller_1.rideController.riderGetHisRideDetails);
 exports.rideRoutes = router;
