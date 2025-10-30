@@ -93,6 +93,16 @@ const getAdminStates = (0, catchAsync_1.catchAsync)((req, res, next) => __awaite
         data: result,
     });
 }));
+const getAUserRideCount = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req === null || req === void 0 ? void 0 : req.user;
+    const result = yield user_services_1.userServices.getAUserRideCount(id);
+    (0, sendResponse_1.sendResponse)(res, {
+        success: true,
+        statusCode: 200,
+        message: "User Ride Count Done Done",
+        data: result,
+    });
+}));
 exports.userControllers = {
     adminChangeUserVerification,
     adminDeleteUser,
@@ -102,4 +112,5 @@ exports.userControllers = {
     getAUser,
     updateAUser,
     getAdminStates,
+    getAUserRideCount,
 };

@@ -127,6 +127,14 @@ const getAdminStats = () => __awaiter(void 0, void 0, void 0, function* () {
     };
 });
 exports.getAdminStats = getAdminStats;
+const getAUserRideCount = (riderId) => __awaiter(void 0, void 0, void 0, function* () {
+    const existUser = yield ride_model_1.Ride.findOne({ rider: riderId });
+    if (!existUser) {
+        throw new AppError_1.AppError(401, "User is not Found");
+    }
+    const result = yield ride_model_1.Ride.countDocuments({ rider: riderId });
+    return { rideCount: result };
+});
 exports.userServices = {
     adminChangeUserVerification,
     adminDeleteUser,
@@ -136,4 +144,5 @@ exports.userServices = {
     getAUser,
     updateUserData,
     getAdminStats: exports.getAdminStats,
+    getAUserRideCount,
 };

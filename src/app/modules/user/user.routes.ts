@@ -45,5 +45,10 @@ router.get(
   checkAuth([ERole.admin]),
   userControllers.getAdminStates
 );
+router.get(
+  "/ride-count",
+  checkAuth([ERole.rider]),
+  userControllers.getAUserRideCount
+);
 
 export const userRoutes = router;

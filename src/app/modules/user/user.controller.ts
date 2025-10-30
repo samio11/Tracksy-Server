@@ -1,3 +1,4 @@
+import { JwtPayload } from "jsonwebtoken";
 import { catchAsync } from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
 import { userServices } from "./user.services";
@@ -85,6 +86,16 @@ const getAdminStates = catchAsync(async (req, res, next) => {
     data: result,
   });
 });
+const getAUserRideCount = catchAsync(async (req, res, next) => {
+  const { id } = req?.user as JwtPayload;
+  const result = await userServices.getAUserRideCount(id);
+  sendResponse(res, {
+    success: true,
+    statusCode: 200,
+    message: "User Ride Count Done Done",
+    data: result,
+  });
+});
 
 export const userControllers = {
   adminChangeUserVerification,
@@ -95,4 +106,5 @@ export const userControllers = {
   getAUser,
   updateAUser,
   getAdminStates,
+  getAUserRideCount,
 };

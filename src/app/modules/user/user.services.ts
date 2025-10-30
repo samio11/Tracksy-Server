@@ -137,6 +137,15 @@ export const getAdminStats = async (): Promise<IAdminStats> => {
   };
 };
 
+const getAUserRideCount = async (riderId: string) => {
+  const existUser = await Ride.findOne({ rider: riderId });
+  if (!existUser) {
+    throw new AppError(401, "User is not Found");
+  }
+  const result = await Ride.countDocuments({ rider: riderId });
+  return { rideCount: result };
+};
+
 export const userServices = {
   adminChangeUserVerification,
   adminDeleteUser,
@@ -146,4 +155,5 @@ export const userServices = {
   getAUser,
   updateUserData,
   getAdminStats,
+  getAUserRideCount,
 };
