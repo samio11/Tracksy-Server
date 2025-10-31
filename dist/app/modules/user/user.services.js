@@ -133,6 +133,19 @@ const getAdminStats = () => __awaiter(void 0, void 0, void 0, function* () {
     };
 });
 exports.getAdminStats = getAdminStats;
+const driverCompleteRide = (driverId, payload, query) => __awaiter(void 0, void 0, void 0, function* () {
+    const completeRideQuery = new QueryBuilder_1.QueryBuilder(ride_model_1.Ride.find({ driver: driverId, rideStatus: payload }), query);
+    const completeRideData = yield completeRideQuery
+        .filter()
+        .sort()
+        .fields()
+        .paginate();
+    const [data, meta] = yield Promise.all([
+        completeRideData.build(),
+        completeRideData.getMetaData(),
+    ]);
+    return { data, meta };
+});
 const getAUserRideCount = (riderId) => __awaiter(void 0, void 0, void 0, function* () {
     const existUser = yield ride_model_1.Ride.findOne({ rider: riderId });
     if (!existUser) {
@@ -151,4 +164,5 @@ exports.userServices = {
     updateUserData,
     getAdminStats: exports.getAdminStats,
     getAUserRideCount,
+    driverCompleteRide,
 };

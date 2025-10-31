@@ -143,6 +143,28 @@ export const getAdminStats = async (): Promise<IAdminStats> => {
   };
 };
 
+const driverCompleteRide = async (
+  driverId: string,
+  payload: string,
+  query: Record<string, string>
+) => {
+  const completeRideQuery = new QueryBuilder(
+    Ride.find({ driver: driverId, rideStatus: payload }),
+    query
+  );
+  const completeRideData = await completeRideQuery
+    .filter()
+    .sort()
+    .fields()
+    .paginate();
+
+  const [data, meta] = await Promise.all([
+    completeRideData.build(),
+    completeRideData.getMetaData(),
+  ]);
+  return { data, meta };
+};
+
 const getAUserRideCount = async (riderId: string) => {
   const existUser = await Ride.findOne({ rider: riderId });
   if (!existUser) {
@@ -162,4 +184,5 @@ export const userServices = {
   updateUserData,
   getAdminStats,
   getAUserRideCount,
+  driverCompleteRide,
 };

@@ -50,5 +50,10 @@ router.get(
   checkAuth([ERole.rider]),
   userControllers.getAUserRideCount
 );
+router.get(
+  "/driver-complete-ride",
+  checkAuth([ERole.driver]),
+  userControllers.driverCompleteRide
+);
 
 export const userRoutes = router;

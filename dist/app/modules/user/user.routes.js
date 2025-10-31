@@ -15,4 +15,5 @@ router.get("/get", (0, checkAuth_1.checkAuth)([user_interface_1.ERole.admin]), u
 router.get("/get/:id", (0, checkAuth_1.checkAuth)(Object.values(user_interface_1.ERole)), user_controller_1.userControllers.getAUser);
 router.get("/admin-states", (0, checkAuth_1.checkAuth)([user_interface_1.ERole.admin]), user_controller_1.userControllers.getAdminStates);
 router.get("/ride-count", (0, checkAuth_1.checkAuth)([user_interface_1.ERole.rider]), user_controller_1.userControllers.getAUserRideCount);
+router.get("/driver-complete-ride", (0, checkAuth_1.checkAuth)([user_interface_1.ERole.driver]), user_controller_1.userControllers.driverCompleteRide);
 exports.userRoutes = router;

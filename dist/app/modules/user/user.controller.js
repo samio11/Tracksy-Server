@@ -63,6 +63,18 @@ const getAllUser = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(vo
         data: result,
     });
 }));
+const driverCompleteRide = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req === null || req === void 0 ? void 0 : req.user;
+    const status = "completed";
+    const query = req === null || req === void 0 ? void 0 : req.query;
+    const result = yield user_services_1.userServices.driverCompleteRide(id, status, query);
+    (0, sendResponse_1.sendResponse)(res, {
+        success: true,
+        statusCode: 200,
+        message: "Driver Complete Ride data Done",
+        data: result,
+    });
+}));
 const getAUser = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req === null || req === void 0 ? void 0 : req.params;
     const result = yield user_services_1.userServices.getAUser(id);
@@ -113,4 +125,5 @@ exports.userControllers = {
     updateAUser,
     getAdminStates,
     getAUserRideCount,
+    driverCompleteRide,
 };

@@ -56,6 +56,22 @@ const getAllUser = catchAsync(async (req, res, next) => {
     data: result,
   });
 });
+const driverCompleteRide = catchAsync(async (req, res, next) => {
+  const { id } = req?.user as JwtPayload;
+  const status = "completed";
+  const query = req?.query;
+  const result = await userServices.driverCompleteRide(
+    id,
+    status,
+    query as Record<string, string>
+  );
+  sendResponse(res, {
+    success: true,
+    statusCode: 200,
+    message: "Driver Complete Ride data Done",
+    data: result,
+  });
+});
 const getAUser = catchAsync(async (req, res, next) => {
   const { id } = req?.params;
   const result = await userServices.getAUser(id);
@@ -107,4 +123,5 @@ export const userControllers = {
   updateAUser,
   getAdminStates,
   getAUserRideCount,
+  driverCompleteRide,
 };
