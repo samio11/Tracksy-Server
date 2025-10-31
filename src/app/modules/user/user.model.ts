@@ -19,7 +19,7 @@ const userSchema = new Schema<IUser>(
     },
     avatar: { type: String },
     driverProfile: { type: Schema.Types.ObjectId, ref: "Driver" },
-    isVerified: { type: Boolean, default: false },
+    isVerified: { type: Boolean, default: true },
   },
   {
     versionKey: false,
