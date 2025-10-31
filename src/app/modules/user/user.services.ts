@@ -75,7 +75,13 @@ const getAllUser = async (query: Record<string, string>) => {
 };
 
 const getAUser = async (id: string) => {
-  const result = await User.findById(id)?.populate("driverProfile");
+  const result = await User.findById(id)?.populate({
+    path: "driverProfile",
+    populate: {
+      path: "vehicle",
+      model: "Vehicle",
+    },
+  });
   return result;
 };
 

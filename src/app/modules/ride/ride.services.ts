@@ -288,7 +288,7 @@ const singleRideData = async (rideId: string) => {
 };
 
 const riderGetHisRideDetails = async (riderId: string) => {
-  const result = await Ride.find({ rider: riderId });
+  const result = await Ride.find({ rider: riderId }).populate("rider");
   return result;
 };
 

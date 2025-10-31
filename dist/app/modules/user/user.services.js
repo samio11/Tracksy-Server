@@ -77,7 +77,13 @@ const getAllUser = (query) => __awaiter(void 0, void 0, void 0, function* () {
 });
 const getAUser = (id) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
-    const result = yield ((_a = user_model_1.User.findById(id)) === null || _a === void 0 ? void 0 : _a.populate("driverProfile"));
+    const result = yield ((_a = user_model_1.User.findById(id)) === null || _a === void 0 ? void 0 : _a.populate({
+        path: "driverProfile",
+        populate: {
+            path: "vehicle",
+            model: "Vehicle",
+        },
+    }));
     return result;
 });
 const updateUserData = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
