@@ -32,7 +32,7 @@ const userSchema = new mongoose_1.Schema({
     },
     avatar: { type: String },
     driverProfile: { type: mongoose_1.Schema.Types.ObjectId, ref: "Driver" },
-    isVerified: { type: Boolean, default: false },
+    isVerified: { type: Boolean, default: true },
 }, {
     versionKey: false,
     timestamps: true,
